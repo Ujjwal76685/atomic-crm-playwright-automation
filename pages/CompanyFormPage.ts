@@ -33,11 +33,9 @@ export class CompanyFormPage extends BasePage {
         ...labels.map(x => this.page.getByLabel(new RegExp(`^${x}$`, 'i'))),
         ...names.map(x => this.page.locator(`[name="${x}"]`))
       ];
-      for (const locator of candidates) {
-        if (await locator.first().isVisible().catch(() => false)) {
-          await locator.first().fill(value);
-          break;
-        }
+      const target = await this.waitForFirstVisible(candidates, 2000);
+      if (target) {
+        await target.fill(value);
       }
     }
 
@@ -48,6 +46,10 @@ export class CompanyFormPage extends BasePage {
     ]);
 
     await this.page.waitForLoadState('domcontentloaded').catch(() => {});
-    await expect(this.page.getByText(data.name, { exact: false }).first()).toBeVisible();
+
+    // Positive confirmation the save actually went through, instead of
+    // just assuming a fixed pause was long enough.
+    await expect(this.page.getByText(data.name, { exact: false }).first())
+      .toBeVisible({ timeout: 10_000 });
   }
 }

@@ -22,18 +22,25 @@ export class CompaniesPage extends BasePage {
       this.page.getByRole('textbox', { name: /search/i }),
       this.page.locator('input[type="search"]')
     ];
-    for (const locator of candidates) {
-      if (await locator.first().isVisible().catch(() => false)) {
-        await locator.first().fill(name);
-        await this.page.waitForTimeout(500);
-        return;
-      }
+
+    const input = await this.waitForFirstVisible(candidates, 5000);
+
+    if (!input) {
+      // No search box in this UI - fall back to a plain text assertion.
+      await expect(this.page.getByText(name, { exact: false }).first()).toBeVisible({ timeout: 8_000 });
+      return;
     }
-    // If the current UI has no search box, use the browser find-like text assertion.
-    await expect(this.page.getByText(name, { exact: false }).first()).toBeVisible();
+
+    await input.fill(name);
+
+    // Wait for the filtered result to actually appear instead of a fixed
+    // sleep. react-admin's list filter is debounced, so this replaces the
+    // old `waitForTimeout(500)` which was a guess, not a real readiness
+    // signal.
+    await expect(this.page.getByText(name, { exact: false }).first()).toBeVisible({ timeout: 8_000 });
   }
 
   async verify(name: string) {
-    await expect(this.page.getByText(name, { exact: false }).first()).toBeVisible();
+    await expect(this.page.getByText(name, { exact: false }).first()).toBeVisible({ timeout: 8_000 });
   }
 }
