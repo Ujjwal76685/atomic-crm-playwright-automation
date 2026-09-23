@@ -1,0 +1,22 @@
+{
+  "name": "atomic-crm-playwright-assessment",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "report": "playwright show-report",
+    "clean": "node -e \"import('node:fs').then(fs=>{for(const p of ['test-results','playwright-report','reports/execution-report.pdf','screenshots']){try{fs.rmSync(p,{recursive:true,force:true})}catch{}}})\"",
+    "mcp": "playwright-mcp --browser chromium"
+  },
+  "devDependencies": {
+    "@playwright/mcp": "^0.0.76",
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^22.19.19",
+    "dotenv": "^17.2.2",
+    "pdf-lib": "^1.17.1",
+    "typescript": "^5.8.3"
+  }
+}
