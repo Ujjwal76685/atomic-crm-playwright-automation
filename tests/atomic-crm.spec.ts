@@ -25,6 +25,7 @@ test.describe(
          */
 
         const data = generateTestData();
+        const contactFullName = `${data.contact.firstName} ${data.contact.lastName}`;
 
 
         /*
@@ -173,23 +174,34 @@ test.describe(
         /*
          * --------------------------------------------------
          * VERIFY CONTACT
+         *
+         * Search/verify the grid by full NAME - Atomic CRM's Contacts
+         * Datagrid renders Name/Company/Tags, not the raw email, so
+         * asserting the email string is visible *in the grid* fails even
+         * when the correct contact is on screen. Email + the Company link
+         * are instead confirmed on the contact's own detail page, which is
+         * a stronger check anyway (it verifies saved data, not just that a
+         * row rendered).
          * --------------------------------------------------
          */
 
         logStep(
-          `Searching and verifying contact: ${
-            data.contact.email
-          }`
+          `Searching and verifying contact: ${contactFullName}`
         );
 
         await contacts.goto();
 
         await contacts.search(
-          data.contact.email
+          contactFullName
         );
 
-        await contacts.verifyContact(
-          data.contact.email
+        await contacts.openFirstResult(
+          contactFullName
+        );
+
+        await contacts.verifyDetails(
+          data.contact.email,
+          data.company.name
         );
 
         await contacts.screenshot(
