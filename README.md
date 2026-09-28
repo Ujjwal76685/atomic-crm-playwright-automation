@@ -221,18 +221,6 @@ Playwright errors can contain terminal/ANSI control characters. The custom PDF r
 
 The assessment targets the public Atomic CRM demo. The upstream project documents a FakeRest/demo data provider whose data resets on page reload, so this should be treated as a demo automation environment rather than persistent production data.
 
-## Expected submission artifacts
-
-After a successful execution:
-
-```text
-playwright-report/
-reports/execution-report.pdf
-screenshots/
-test-results/
-```
-
-For the assessment, submit the repository or ZIP together with the generated PDF and README.
 
 ## Useful commands
 
